@@ -12,29 +12,90 @@ The variables included in this dataset are:
 - interval: Identifier for the 5-minute interval in which measurement was taken  
 
 ## Loading and preprocessing the data
-The code to load and preprocess the data is as follows
-```{r LoadData, echo=TRUE}
+The code to load and preprocess the data is as follows. You need to install "xtable" and "ggplot2" packages if you have not done so.
+```{r LoadData, echo=TRUE, results='hide'}
+library(dplyr)
+library(ggplot2)
+library(knitr)
 if (file.exists("activity.csv")) {
   activity <- read.csv("activity.csv",TRUE)
 } else {
   unzip("activity.zip")
   activity <- read.csv("activity.csv",TRUE)
 }
+```
+
+
+```{r ExploreData, echo=TRUE}
 # Explore the data
 str(activity)
 ```
 
-
 ## What is mean total number of steps taken per day?
+To calculate the total number of steps, use the following code: 
+```{r TotalSteps, echo=TRUE}
+act<- group_by(activity,date)
+hist1 <- summarize(act, total_steps= sum(steps, na.rm = TRUE))
+g<-qplot(x=date, y=total_steps,data=hist1,stat="identity",position ="dodge", geom="histogram", ylab="No of Steps",main="Histogram of the total number of steps taken each day") 
+g<- g + theme(axis.text.x = element_text(angle = 70, hjust = 1))
+print(g)
+```
 
-
+The mean and median total number of steps taken per day is show in the table below.
+```{r MeanSteps, echo=TRUE}
+act<- group_by(activity,date)
+table1 <- summarize(act, mean_steps= mean(steps, na.rm = TRUE)
+                    , median_steps = median(steps, na.rm = TRUE))
+kable(table1, format="markdown")
+```
 
 ## What is the average daily activity pattern?
+A time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis) is shown below.
+```{r AverageDaily1, echo=TRUE}
+act<- group_by(activity,interval)
+time1 <- summarize(act, mean_steps= mean(steps, na.rm = TRUE))
+g<-qplot(x=interval, y=mean_steps,data=time1,stat="identity"
+         ,position ="dodge", ylab="Average No of Steps"
+         ,main="Average number of steps taken each interval"
+         ,type="l") 
+g<- g + theme(axis.text.x = element_text(angle = 70, hjust = 1))
+print(g)
 
+```
 
+The 5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps is determined as follows.
+```{r AverageDaily2, echo=TRUE}
+intervalMax <- time1[time1["mean_steps"]==max(time1$mean_steps),"interval"] 
+print(intervalMax)
+```
+The 5-minute interval with the maximum average number of steps across all days is `r intervalMax`.
 
 ## Imputing missing values
+The total number of missing values in the dataset (i.e. the total number of rows with NAs) is derived as follows.
+```{r MissingValues1, echo=TRUE}
+good<-complete.cases(activity)
+missingAct <- activity[!good,]
+missing <- length(missingAct[,"steps"])
+```
+The total number of missing values in the dataset is `r missing`.
 
+The strategy for dealing with missing values is to replace them with the mean for that 5-minute interval across all days. Based on this strategy, the a new dataset that is equal to the original dataset but with the missing data filled in, is derived as follows.
+```{r MissingValues2, echo=TRUE}
+activity2<- activity[good,] # complete cases
+missingAct<-left_join(missingAct,time1,by=c("interval")) # join time1= mean steps per interval, calculated earlier.
+missingAct[,"steps"]<-missingAct[,"mean_steps"] # replace missing values
+# merge data bact
+activity2<- rbind(activity2,missingAct[,c("steps","date","interval")])
+```
+
+A histogram of the total number of steps taken each day is shown below.
+```{r TotalSteps2, echo=TRUE}
+act2<- group_by(activity2,date)
+hist2 <- summarize(act2, total_steps= sum(steps, na.rm = FALSE))
+g2<-qplot(x=date, y=total_steps,data=hist2,stat="identity",position ="dodge", geom="histogram", ylab="Tota No of Steps",main="Histogram of the total number of steps taken each day") 
+g2<- g2 + theme(axis.text.x = element_text(angle = 70, hjust = 1))
+print(g2)
+```
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
