@@ -39,6 +39,8 @@ hist1 <- summarize(act, total_steps= sum(steps, na.rm = TRUE))
 g<-qplot(x=date, y=total_steps,data=hist1,stat="identity",position ="dodge", geom="histogram", ylab="No of Steps",main="Histogram of the total number of steps taken each day") 
 g<- g + theme(axis.text.x = element_text(angle = 70, hjust = 1))
 print(g)
+dev.copy(png,'./instructions_fig/plot1.png', width = 480, height = 480)
+dev.off()
 ```
 
 The mean and median total number of steps taken per day is show in the table below.
@@ -60,6 +62,8 @@ g<-qplot(x=interval, y=mean_steps,data=time1,stat="identity"
          ,type="l") 
 g<- g + theme(axis.text.x = element_text(angle = 70, hjust = 1))
 print(g)
+dev.copy(png,'./instructions_fig/plot2.png', width = 480, height = 480)
+dev.off()
 
 ```
 
@@ -95,6 +99,8 @@ hist2 <- summarize(act2, total_steps= sum(steps, na.rm = FALSE))
 g2<-qplot(x=date, y=total_steps,data=hist2,stat="identity",position ="dodge", geom="histogram", ylab="Tota No of Steps",main="Histogram of the total number of steps taken each day") 
 g2<- g2 + theme(axis.text.x = element_text(angle = 70, hjust = 1))
 print(g2)
+dev.copy(png,'./instructions_fig/plot3.png', width = 480, height = 480)
+dev.off()
 ```
 
 The mean and median total number of steps taken per day with defaults applied to missing values are show in the table below.
@@ -109,3 +115,4 @@ These values differ from the estimates from the first part of the assignment wit
 What is the impact of imputing missing data on the estimates of the total daily number of steps? The estimates who that values could vary sunstantially from what was recorded.
 
 ## Are there differences in activity patterns between weekdays and weekends?
+

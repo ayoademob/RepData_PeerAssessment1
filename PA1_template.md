@@ -1,4 +1,9 @@
-# Reproducible Research: Peer Assessment 1
+---
+title: "Reproducible Research: Peer Assessment 1"
+output: 
+  html_document:
+    keep_md: true
+---
 This assignment makes use of data from a personal activity monitoring device. This device collects data at 5 minute intervals through out the day. The data consists of two months of data from an anonymous individual collected during the months of October and November, 2012 and include the number of steps taken in 5 minute intervals each day.  
 
 The variables included in this dataset are:  
@@ -11,22 +16,6 @@ The code to load and preprocess the data is as follows. You need to install "xta
 
 ```r
 library(dplyr)
-```
-
-```
-## 
-## Attaching package: 'dplyr'
-## 
-## The following object is masked from 'package:stats':
-## 
-##     filter
-## 
-## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union
-```
-
-```r
 library(ggplot2)
 library(knitr)
 if (file.exists("activity.csv")) {
@@ -62,7 +51,25 @@ g<- g + theme(axis.text.x = element_text(angle = 70, hjust = 1))
 print(g)
 ```
 
-![](PA1_template_files/figure-html/TotalSteps-1.png) 
+![plot of chunk TotalSteps](figure/TotalSteps-1.png) 
+
+```r
+dev.copy(png,'./instructions_fig/plot1.png', width = 480, height = 480)
+```
+
+```
+## quartz_off_screen 
+##                 5
+```
+
+```r
+dev.off()
+```
+
+```
+## RStudioGD 
+##         2
+```
 
 The mean and median total number of steps taken per day is show in the table below.
 
@@ -157,7 +164,25 @@ print(g)
 ## ymax not defined: adjusting position using y instead
 ```
 
-![](PA1_template_files/figure-html/AverageDaily1-1.png) 
+![plot of chunk AverageDaily1](figure/AverageDaily1-1.png) 
+
+```r
+dev.copy(png,'./instructions_fig/plot2.png', width = 480, height = 480)
+```
+
+```
+## quartz_off_screen 
+##                 5
+```
+
+```r
+dev.off()
+```
+
+```
+## RStudioGD 
+##         2
+```
 
 The 5-minute interval, on average across all the days in the dataset, that contains the maximum number of steps is determined as follows.
 
@@ -204,7 +229,25 @@ g2<- g2 + theme(axis.text.x = element_text(angle = 70, hjust = 1))
 print(g2)
 ```
 
-![](PA1_template_files/figure-html/TotalSteps2-1.png) 
+![plot of chunk TotalSteps2](figure/TotalSteps2-1.png) 
+
+```r
+dev.copy(png,'./instructions_fig/plot3.png', width = 480, height = 480)
+```
+
+```
+## quartz_off_screen 
+##                 5
+```
+
+```r
+dev.off()
+```
+
+```
+## RStudioGD 
+##         2
+```
 
 The mean and median total number of steps taken per day with defaults applied to missing values are show in the table below.
 
@@ -280,4 +323,9 @@ kable(table1, format="markdown")
 |2012-11-29 | 24.4687500|      0.00000|
 |2012-11-30 | 37.3825996|     34.11321|
 
+These values differ from the estimates from the first part of the assignment with the days in which no data was recorded now having mean data. 
+
+What is the impact of imputing missing data on the estimates of the total daily number of steps? The estimates who that values could vary sunstantially from what was recorded.
+
 ## Are there differences in activity patterns between weekdays and weekends?
+
