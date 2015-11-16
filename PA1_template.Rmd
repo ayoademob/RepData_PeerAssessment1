@@ -97,5 +97,15 @@ g2<- g2 + theme(axis.text.x = element_text(angle = 70, hjust = 1))
 print(g2)
 ```
 
+The mean and median total number of steps taken per day with defaults applied to missing values are show in the table below.
+```{r MeanSteps2, echo=TRUE}
+table1 <- summarize(act2, mean_steps= mean(steps, na.rm = TRUE)
+                    , median_steps = median(steps, na.rm = TRUE))
+kable(table1, format="markdown")
+```
+
+These values differ from the estimates from the first part of the assignment with the days in which no data was recorded now having mean data. 
+
+What is the impact of imputing missing data on the estimates of the total daily number of steps? The estimates who that values could vary sunstantially from what was recorded.
 
 ## Are there differences in activity patterns between weekdays and weekends?
