@@ -24,6 +24,7 @@ if (file.exists("activity.csv")) {
   unzip("activity.zip")
   activity <- read.csv("activity.csv",TRUE)
 }
+activity$date<-as.Date(activity$date)
 ```
 
 
@@ -36,11 +37,12 @@ str(activity)
 ```
 ## 'data.frame':	17568 obs. of  3 variables:
 ##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ date    : Factor w/ 61 levels "2012-10-01","2012-10-02",..: 1 1 1 1 1 1 1 1 1 1 ...
+##  $ date    : Date, format: "2012-10-01" "2012-10-01" ...
 ##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
 ```
 
 ## What is mean total number of steps taken per day?
+
 To calculate the total number of steps, use the following code: 
 
 ```r
@@ -156,7 +158,7 @@ g<-qplot(x=interval, y=mean_steps,data=time1,stat="identity"
          ,position ="dodge", ylab="Average No of Steps"
          ,main="Average number of steps taken each interval"
          ,type="l") 
-g<- g + theme(axis.text.x = element_text(angle = 70, hjust = 1))
+g<- g + theme(axis.text.x = element_text(angle = 70, hjust = 1))+geom_line()
 print(g)
 ```
 
@@ -329,3 +331,42 @@ What is the impact of imputing missing data on the estimates of the total daily 
 
 ## Are there differences in activity patterns between weekdays and weekends?
 
+
+```r
+activity$weekday <- weekdays( as.Date(activity$date ))
+activity$day_type <- ifelse( (activity$weekday=="Saturday" | activity$weekday=="Sunday"), "weekend", "weekday")
+activity$day_type <- as.factor(activity$day_type)
+str(activity)
+```
+
+```
+## 'data.frame':	17568 obs. of  5 variables:
+##  $ steps   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ date    : Date, format: "2012-10-01" "2012-10-01" ...
+##  $ interval: int  0 5 10 15 20 25 30 35 40 45 ...
+##  $ weekday : chr  "Monday" "Monday" "Monday" "Monday" ...
+##  $ day_type: Factor w/ 2 levels "weekday","weekend": 1 1 1 1 1 1 1 1 1 1 ...
+```
+
+
+```r
+weekend_data <- subset(activity, activity$day_type=="weekend")
+weekday_data <- subset(activity, activity$day_type=="weekday")
+
+
+weekend_intervalmeans <- aggregate(steps ~ interval, data=weekend_data, mean)
+colNames <- names(weekend_intervalmeans)
+colNames[2] <- "mean"
+names(weekend_intervalmeans) <- colNames
+
+weekday_intervalmeans <- aggregate(steps ~ interval, data=weekday_data, mean)
+colNames <- names(weekday_intervalmeans)
+colNames[2] <- "mean"
+names(weekday_intervalmeans) <- colNames
+
+par(mfrow=c(2,1))
+plot(weekday_intervalmeans$interval, weekday_intervalmeans$mean, type="l", main="weekday")
+plot(weekend_intervalmeans$interval, weekend_intervalmeans$mean, type="l", main="weekend")
+```
+
+![plot of chunk ActivityPatterns2](figure/ActivityPatterns2-1.png) 
